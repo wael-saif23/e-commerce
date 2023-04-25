@@ -1,11 +1,12 @@
+import 'package:e_commerce_app/models/items_model.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
-
+  const DetailsScreen({super.key, required this.product});
+final Item product;
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
@@ -55,12 +56,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     ),
         body: Column(
           children: [
-             Image.asset("assets/img/2.webp"),
+             Image.asset(widget.product.imgPath),
               SizedBox(
                 height: 11,
               ),
               Text(
-                "\$ 12.99",
+                "\$ ${widget.product.price}",
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(
@@ -126,7 +127,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         width: 3,
                       ),
                       Text(
-                        "Flower Shop",
+                        widget.product.location,
                         style: TextStyle(fontSize: 19),
                       ),
                     ],
