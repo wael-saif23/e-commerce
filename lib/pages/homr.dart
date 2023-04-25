@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Item> addSelectedproduct = [];
+    final cartProviderInstans = Provider.of<CartProvider>(context);
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(top: 22),
@@ -48,15 +48,13 @@ class Home extends StatelessWidget {
                     ]),
                     footer: GridTileBar(
 // backgroundColor: Color.fromARGB(66, 73, 127, 110),
-                      trailing: Consumer<CartProvider>(
-                          builder: ((context, addcart, child) {
-                        return IconButton(
+                      trailing:  IconButton(
                             color: Color.fromARGB(255, 62, 94, 70),
                             onPressed: () {
-                              addcart.add(items[index]);
+                              cartProviderInstans.add(items[index]);
                             },
-                            icon: Icon(Icons.add));
-                      })),
+                               icon: Icon(Icons.add)),
+                      
 
                       leading: Text(items[index].price.toString()),
 
@@ -119,8 +117,8 @@ class Home extends StatelessWidget {
         ),
         appBar: AppBar(
           actions: [
-            Consumer<CartProvider>(builder: ((context, cartInstant, child) {
-              return Row(
+            
+               Row(
                 children: [
                   Stack(
                     children: [
@@ -128,7 +126,7 @@ class Home extends StatelessWidget {
                         bottom: 24,
                         child: Container(
                             child: Text(
-                              "${cartInstant.selectedProducts.length}",
+                              "${cartProviderInstans.selectedProducts.length}",
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Color.fromARGB(255, 0, 0, 0)),
@@ -147,13 +145,13 @@ class Home extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: Text(
-                      "\$ ${cartInstant.price}",
+                      "\$ ${cartProviderInstans.price}",
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
                 ],
-              );
-            }))
+              ),
+            
           ],
           backgroundColor: appbarGreen,
           title: Text("Home"),
