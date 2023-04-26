@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/pages/check_out_screen.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,9 @@ class RecuirdProducts extends StatelessWidget {
                   )),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CheckOutScreen()));
+              },
               icon: const Icon(Icons.add_shopping_cart),
             ),
           ],

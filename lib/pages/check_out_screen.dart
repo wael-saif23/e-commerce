@@ -21,21 +21,28 @@ class CheckOutScreen extends StatelessWidget {
         ],
       ),
 
-      body: SizedBox(
-        height: 500,
-        child: SingleChildScrollView(
-          child: ListView.builder(
-            itemCount: 3,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                child: ListTile(
-                  leading: Image.asset(cartProviderInstans.selectedProducts[index].imgPath),
-                  title: Text(""),
-                ),
-              );
-            },
+      body: Column(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.all(8),
+            child: SizedBox(
+              height: 500,
+              child: ListView.builder(
+                itemCount: cartProviderInstans.selectedProducts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    child: ListTile(
+                      leading: CircleAvatar(backgroundImage: AssetImage(cartProviderInstans.selectedProducts[index].imgPath)),
+                      title: Text(cartProviderInstans.selectedProducts[index].name),
+                      subtitle: Text("\$${cartProviderInstans.selectedProducts[index].price} - ${cartProviderInstans.selectedProducts[index].location}"),
+                      trailing: IconButton(onPressed: (){}, icon:const Icon( Icons.cancel)),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
