@@ -10,4 +10,15 @@ class CartProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  delet(Item product) {
+    selectedProducts.remove(product);
+    price -= product.price.round();
+
+    notifyListeners();
+  }
+
+  get itemCount {
+    return selectedProducts.length;
+  }
 }

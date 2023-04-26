@@ -1,4 +1,4 @@
-import 'package:e_commerce_app/pages/homr.dart';
+import 'package:e_commerce_app/pages/home.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
