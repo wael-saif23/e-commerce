@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/pages/home.dart';
+import 'package:e_commerce_app/pages/register.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +25,9 @@ class MyApp extends StatelessWidget {
       create: (context) {
         return CartProvider();
       },
-      child: const MaterialApp(
+      child:  MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: Register(),
       ),
     );
   }
