@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
 import 'package:e_commerce_app/models/items_model.dart';
+import 'package:e_commerce_app/pages/check_out_screen.dart';
 import 'package:e_commerce_app/pages/details-screen.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/shared/colors.dart';
@@ -91,11 +92,24 @@ class Home extends StatelessWidget {
                     ListTile(
                         title: Text("Home"),
                         leading: Icon(Icons.home),
-                        onTap: () {}),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Home(),
+                            ),
+                          );
+                        }),
                     ListTile(
                         title: Text("My products"),
                         leading: Icon(Icons.add_shopping_cart),
-                        onTap: () {}),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CheckOutScreen(),
+                              ));
+                        }),
                     ListTile(
                         title: Text("About"),
                         leading: Icon(Icons.help_center),
@@ -108,7 +122,7 @@ class Home extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 12),
-                  child: Text("Developed by Wael saif © 2023",
+                  child: Text("Developed by Wael Saif © 2023",
                       style: TextStyle(fontSize: 16)),
                 )
               ],
