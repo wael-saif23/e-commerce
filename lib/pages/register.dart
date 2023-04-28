@@ -6,7 +6,7 @@ import 'package:e_commerce_app/shared/contants.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
+
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -80,11 +80,14 @@ class _RegisterState extends State<Register> {
                       height: 33,
                     ),
                     TextFormField(
-                        validator: (value) {
-                          return value != null &&
-                                  !EmailValidator.validate(value)
-                              ? "Enter a valid email"
-                              : null;
+                        validator: (email) {
+                          return email != null &&
+                                  email.contains(
+                                    RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"),
+                                  )
+                              ?  null:"Enter a valid email"
+                              ;
                         },
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: emailController,
