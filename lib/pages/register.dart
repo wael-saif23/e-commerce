@@ -3,8 +3,10 @@
 import 'package:e_commerce_app/pages/login.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
+import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -14,7 +16,9 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool isVisibility = true;
 
   final emailController = TextEditingController();
 
@@ -25,14 +29,17 @@ class _RegisterState extends State<Register> {
       isLoading = true;
     });
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+      if (e.code == 'weak-password') {
+        showSnackBar(context, "The password provided is too weak.");
+      } else if (e.code == 'email-already-in-use') {
+        showSnackBar(context, "The account already exists for that email.");
       }
+    } catch (e) {
+      showSnackBar(context, e.toString());
     }
     setState(() {
       isLoading = false;
@@ -55,82 +62,113 @@ class _RegisterState extends State<Register> {
           child: Padding(
             padding: const EdgeInsets.all(33.0),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 64,
-                  ),
-                  TextField(
-                      keyboardType: TextInputType.text,
-                      obscureText: false,
-                      decoration: decorationTextfield.copyWith(
-                        hintText: "Enter Your username : ",
-                      )),
-                  const SizedBox(
-                    height: 33,
-                  ),
-                  TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: false,
-                      decoration: decorationTextfield.copyWith(
-                        hintText: "Enter Your Email : ",
-                      )),
-                  const SizedBox(
-                    height: 33,
-                  ),
-                  TextField(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 64,
+                    ),
+                    TextField(
+                        keyboardType: TextInputType.text,
+                        obscureText: false,
+                        decoration: decorationTextfield.copyWith(
+                            hintText: "Enter Your username : ",
+                            suffixIcon: Icon(Icons.person))),
+                    const SizedBox(
+                      height: 33,
+                    ),
+                    TextFormField(
+                        validator: (value) {
+                          return value != null &&
+                                  !EmailValidator.validate(value)
+                              ? "Enter a valid email"
+                              : null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        obscureText: false,
+                        decoration: decorationTextfield.copyWith(
+                            hintText: "Enter Your Email : ",
+                            suffixIcon: Icon(Icons.email))),
+                    const SizedBox(
+                      height: 33,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        return value != null && value.length < 8
+                            ? "Enter at least 8 characters"
+                            : null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: passwordController,
                       keyboardType: TextInputType.text,
-                      obscureText: true,
+                      obscureText: isVisibility ? true : false,
                       decoration: decorationTextfield.copyWith(
                         hintText: "Enter Your Password : ",
-                      )),
-                  const SizedBox(
-                    height: 33,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      registerCount();
-                    },
-                    child: isLoading
-                        ? CircularProgressIndicator(
-                            color: Colors.blue,
-                          )
-                        : Text(
-                            "Register",
-                            style: TextStyle(fontSize: 19),
-                          ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(BTNgreen),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(12)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 33,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Do not have an account?",
-                          style: TextStyle(fontSize: 18)),
-                      TextButton(
+                        suffixIcon: IconButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Login()),
-                            );
+                            setState(() {
+                              isVisibility = !isVisibility;
+                            });
                           },
-                          child: Text('sign in',
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 18))),
-                    ],
-                  )
-                ],
+                          icon: isVisibility
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 33,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          registerCount();
+                        } else {
+                          showSnackBar(context, "Error");
+                        }
+                      },
+                      child: isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.blue,
+                            )
+                          : Text(
+                              "Register",
+                              style: TextStyle(fontSize: 19),
+                            ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(BTNgreen),
+                        padding: MaterialStateProperty.all(EdgeInsets.all(12)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8))),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 33,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Do not have an account?",
+                            style: TextStyle(fontSize: 18)),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Login()),
+                              );
+                            },
+                            child: Text('sign in',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 18))),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
