@@ -86,6 +86,12 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+        title: Text("SIGN UP"),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: appbarGreen,
+      ),
         backgroundColor: Color.fromARGB(255, 247, 247, 247),
         body: Center(
           child: Padding(
