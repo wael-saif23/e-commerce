@@ -16,6 +16,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool isLoading = false;
+  bool isVisibility = true;
 
   final emailController = TextEditingController();
 
@@ -29,11 +30,7 @@ class _LoginState extends State<Login> {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        showSnackBar(context, 'No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        showSnackBar(context, 'Wrong password provided for that user.');
-      }
+      showSnackBar(context, "ERROR : ${e.code}");
     } catch (e) {
       showSnackBar(context, e.toString());
     }
@@ -68,6 +65,7 @@ class _LoginState extends State<Login> {
                     obscureText: false,
                     decoration: decorationTextfield.copyWith(
                       hintText: "Enter Your Email : ",
+                      suffixIcon: Icon(Icons.email),
                     )),
                 const SizedBox(
                   height: 33,
@@ -75,9 +73,19 @@ class _LoginState extends State<Login> {
                 TextField(
                     controller: passwordController,
                     keyboardType: TextInputType.text,
-                    obscureText: true,
+                    obscureText: isVisibility ? true : false,
                     decoration: decorationTextfield.copyWith(
                       hintText: "Enter Your Password : ",
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isVisibility = !isVisibility;
+                            });
+                          },
+                          icon: isVisibility
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                        ),
                     )),
                 const SizedBox(
                   height: 33,
@@ -85,7 +93,7 @@ class _LoginState extends State<Login> {
                 ElevatedButton(
                   onPressed: () {
                     signIN();
-                    if (!mounted) return;
+                    
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(BTNgreen),
@@ -93,7 +101,11 @@ class _LoginState extends State<Login> {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8))),
                   ),
-                  child: Text(
+                  child: isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.blue,
+                            )
+                          :Text(
                     "Sign in",
                     style: TextStyle(fontSize: 19),
                   ),
