@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
 import 'package:e_commerce_app/pages/login.dart';
+import 'package:e_commerce_app/shared/check%20password.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -19,10 +19,39 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool isVisibility = true;
+  bool isPassword8Char = false;
+  bool isHasDigits = false;
+  bool isHasUppercase = false;
+  bool isHasLowercase = false;
+  bool isHasSpecialCharacters = false;
 
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  checkPasswordVal(String password) {
+    isPassword8Char = false;
+    isHasDigits = false;
+    isHasUppercase = false;
+    isHasLowercase = false;
+    isHasSpecialCharacters = false;
+    setState(() {
+      if (password.contains(RegExp(r'.{8,}'))) {
+        isPassword8Char = true;
+      }
+      if (password.contains(RegExp(r'[0-9]'))) {
+        isHasDigits = true;
+      }
+      if (password.contains(RegExp(r'[A-Z]'))) {
+        isHasUppercase = true;
+      }
+      if (password.contains(RegExp(r'[a-z]'))) {
+        isHasLowercase = true;
+      }
+      if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+        isHasSpecialCharacters = true;
+      }
+    });
+  }
 
   registerCount() async {
     setState(() {
@@ -86,8 +115,8 @@ class _RegisterState extends State<Register> {
                                     RegExp(
                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"),
                                   )
-                              ?  null:"Enter a valid email"
-                              ;
+                              ? null
+                              : "Enter a valid email";
                         },
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: emailController,
@@ -100,6 +129,9 @@ class _RegisterState extends State<Register> {
                       height: 33,
                     ),
                     TextFormField(
+                      onChanged: (value) {
+                        checkPasswordVal(value);
+                      },
                       validator: (value) {
                         return value != null && value.length < 8
                             ? "Enter at least 8 characters"
@@ -124,12 +156,45 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     const SizedBox(
+                      height: 15,
+                    ),
+                    CheckPasswordValidate(
+                        theCondition: isPassword8Char,
+                        theConditionText: "At least 8 characters"),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    CheckPasswordValidate(
+                        theCondition: isHasDigits,
+                        theConditionText: "At least 1 number"),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    CheckPasswordValidate(
+                        theCondition: isHasUppercase,
+                        theConditionText: "Has Uppercase"),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    CheckPasswordValidate(
+                        theCondition: isHasLowercase,
+                        theConditionText: "Has  Lowercase "),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    CheckPasswordValidate(
+                        theCondition: isHasSpecialCharacters,
+                        theConditionText: "Has  Special Characters "),
+                    const SizedBox(
                       height: 33,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async{
                         if (_formKey.currentState!.validate()) {
-                          registerCount();
+                         await registerCount();
+                          if (!mounted) return;
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Login()));
                         } else {
                           showSnackBar(context, "Error");
                         }

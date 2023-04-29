@@ -1,13 +1,52 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-
 import 'package:e_commerce_app/pages/register.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
+import 'package:e_commerce_app/shared/snackbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool isLoading = false;
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  signIN() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showSnackBar(context, 'No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        showSnackBar(context, 'Wrong password provided for that user.');
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +63,7 @@ class Login extends StatelessWidget {
                   height: 64,
                 ),
                 TextField(
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     obscureText: false,
                     decoration: decorationTextfield.copyWith(
@@ -33,6 +73,7 @@ class Login extends StatelessWidget {
                   height: 33,
                 ),
                 TextField(
+                    controller: passwordController,
                     keyboardType: TextInputType.text,
                     obscureText: true,
                     decoration: decorationTextfield.copyWith(
@@ -42,16 +83,19 @@ class Login extends StatelessWidget {
                   height: 33,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Sign in",
-                    style: TextStyle(fontSize: 19),
-                  ),
+                  onPressed: () {
+                    signIN();
+                    if (!mounted) return;
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(BTNgreen),
                     padding: MaterialStateProperty.all(EdgeInsets.all(12)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8))),
+                  ),
+                  child: Text(
+                    "Sign in",
+                    style: TextStyle(fontSize: 19),
                   ),
                 ),
                 const SizedBox(
@@ -60,18 +104,18 @@ class Login extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Do not have an account?", style: TextStyle(fontSize: 18)),
+                    Text("Do not have an account?",
+                        style: TextStyle(fontSize: 18)),
                     TextButton(
-                      onPressed: () {
+                        onPressed: () {
                           Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>  Register()),
-                            );
-                      },
-                      child:
-                          Text('sign up', style: TextStyle(color: Colors.black,fontSize: 18))),
-                 
+                            context,
+                            MaterialPageRoute(builder: (context) => Register()),
+                          );
+                        },
+                        child: Text('sign up',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18))),
                   ],
                 )
               ],
