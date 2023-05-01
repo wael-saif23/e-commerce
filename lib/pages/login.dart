@@ -2,12 +2,15 @@
 
 import 'package:e_commerce_app/pages/forgot_passowrd.dart';
 import 'package:e_commerce_app/pages/register.dart';
-import 'package:e_commerce_app/pages/verify_email_page.dart';
+
+import 'package:e_commerce_app/providers/google_signin.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -31,7 +34,6 @@ class _LoginState extends State<Login> {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, "ERROR : ${e.code}");
     } catch (e) {
@@ -43,8 +45,7 @@ class _LoginState extends State<Login> {
   }
 
   @override
-  void dispose()async {
-     
+  void dispose() async {
     emailController.dispose();
     passwordController.dispose();
 
@@ -53,6 +54,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final googleSignInProvider = Provider.of<GoogleSignInProvider>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -159,7 +161,61 @@ class _LoginState extends State<Login> {
                                   fontSize: 18,
                                   decoration: TextDecoration.underline))),
                     ],
-                  )
+                  ),
+                  SizedBox(
+                    width: 299,
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Divider(
+                          thickness: 0.6,
+                        )),
+                        Text(
+                          "  OR  ",
+                          style: TextStyle(),
+                        ),
+                        Expanded(
+                            child: Divider(
+                          thickness: 0.6,
+                        )),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        googleSignInProvider.googlelogin();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 1)),
+                        child: SvgPicture.asset("assets/img/icons8-google.svg"),
+                        height: 54,
+                      ))
+                  // Container(
+                  //   margin: EdgeInsets.symmetric(vertical: 27),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       GestureDetector(
+                  //         onTap: (){      },
+                  //         child: Container(
+                  //           padding: EdgeInsets.all(13),
+                  //           decoration: BoxDecoration(
+                  //               shape: BoxShape.circle,
+                  //               border:
+                  //                   Border.all( width: 1)),
+                  //           child: SvgPicture.asset(
+                  //             "assets/icons/facebook.svg",
+
+                  //             height: 27,
+                  //           ),))]
+                  //         ),
+                  //       ),
                 ],
               ),
             ),
