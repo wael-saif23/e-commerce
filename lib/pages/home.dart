@@ -16,6 +16,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProviderInstans = Provider.of<CartProvider>(context);
+    final userAccount = FirebaseAuth.instance.currentUser!;
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(top: 22),
@@ -78,14 +79,14 @@ class Home extends StatelessWidget {
                     UserAccountsDrawerHeader(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage("assets/img/BG.jpg"),
+                            image: NetworkImage(userAccount.photoURL!),
                             fit: BoxFit.cover),
                       ),
                       currentAccountPicture: CircleAvatar(
                           radius: 55,
-                          backgroundImage: AssetImage("assets/img/1.jpg")),
-                      accountEmail: Text("w.s_cg@gmail.com"),
-                      accountName: Text("wael saif",
+                          backgroundImage: NetworkImage(userAccount.photoURL!)),
+                      accountEmail: Text(userAccount.email!),
+                      accountName: Text(userAccount.displayName!,
                           style: TextStyle(
                             color: Color.fromARGB(255, 255, 255, 255),
                           )),
@@ -118,7 +119,7 @@ class Home extends StatelessWidget {
                     ListTile(
                         title: Text("Logout"),
                         leading: Icon(Icons.exit_to_app),
-                        onTap: ()async {
+                        onTap: () async {
                           await FirebaseAuth.instance.signOut();
                         }),
                   ],
