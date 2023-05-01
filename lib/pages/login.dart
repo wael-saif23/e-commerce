@@ -2,6 +2,7 @@
 
 import 'package:e_commerce_app/pages/forgot_passowrd.dart';
 import 'package:e_commerce_app/pages/register.dart';
+import 'package:e_commerce_app/pages/verify_email_page.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
@@ -30,6 +31,7 @@ class _LoginState extends State<Login> {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, "ERROR : ${e.code}");
     } catch (e) {
@@ -39,10 +41,13 @@ class _LoginState extends State<Login> {
       isLoading = false;
     });
   }
+
   @override
-  void dispose() {
+  void dispose()async {
+     
     emailController.dispose();
     passwordController.dispose();
+
     super.dispose();
   }
 
@@ -51,11 +56,11 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-        title: Text("SIGN IN"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: appbarGreen,
-      ),
+          title: Text("SIGN IN"),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: appbarGreen,
+        ),
         backgroundColor: Color.fromARGB(255, 247, 247, 247),
         body: Center(
           child: Padding(
@@ -85,23 +90,22 @@ class _LoginState extends State<Login> {
                       decoration: decorationTextfield.copyWith(
                         hintText: "Enter Your Password : ",
                         suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isVisibility = !isVisibility;
-                              });
-                            },
-                            icon: isVisibility
-                                ? Icon(Icons.visibility)
-                                : Icon(Icons.visibility_off),
-                          ),
+                          onPressed: () {
+                            setState(() {
+                              isVisibility = !isVisibility;
+                            });
+                          },
+                          icon: isVisibility
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                        ),
                       )),
                   const SizedBox(
                     height: 33,
                   ),
                   ElevatedButton(
-                    onPressed: ()async {
-                     await signIN();
-                      
+                    onPressed: () {
+                      signIN();
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(BTNgreen),
@@ -110,29 +114,30 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(8))),
                     ),
                     child: isLoading
-                            ? CircularProgressIndicator(
-                                color: Colors.blue,
-                              )
-                            :Text(
-                      "Sign in",
-                      style: TextStyle(fontSize: 19),
-                    ),
+                        ? CircularProgressIndicator(
+                            color: Colors.blue,
+                          )
+                        : Text(
+                            "Sign in",
+                            style: TextStyle(fontSize: 19),
+                          ),
                   ),
                   const SizedBox(
-                  height: 9,
-                ),
-                
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ForgotPassword()),
-                          );
-                  },
-                   child: Text("Forgot password?",
+                    height: 9,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPassword()),
+                      );
+                    },
+                    child: Text("Forgot password?",
                         style: TextStyle(
-                            fontSize: 18, decoration: TextDecoration.underline)),)
-                   ,
+                            fontSize: 18,
+                            decoration: TextDecoration.underline)),
+                  ),
                   const SizedBox(
                     height: 33,
                   ),
@@ -145,12 +150,14 @@ class _LoginState extends State<Login> {
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => Register()),
+                              MaterialPageRoute(
+                                  builder: (context) => Register()),
                             );
                           },
                           child: Text('sign up',
-                              style:
-                                  TextStyle( fontSize: 18,decoration: TextDecoration.underline))),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  decoration: TextDecoration.underline))),
                     ],
                   )
                 ],

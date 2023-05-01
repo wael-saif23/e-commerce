@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/pages/home.dart';
 import 'package:e_commerce_app/pages/login.dart';
 import 'package:e_commerce_app/pages/register.dart';
+import 'package:e_commerce_app/pages/verify_email_page.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,8 @@ class MyApp extends StatelessWidget {
           builder: (context,snapshot){
  if (snapshot.connectionState == ConnectionState.waiting) {return Center(child: CircularProgressIndicator(color: Colors.white,));} 
       else if (snapshot.hasError) {return showSnackBar(context, "Something went wrong");}
-      else if (snapshot.hasData) {return Home();}
-      else { return Login();}
+      else if (snapshot.hasData) {return const VerifyEmailPage();}
+      else { return const Login();}
         }),
       ),
     );
