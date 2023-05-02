@@ -79,14 +79,14 @@ class Home extends StatelessWidget {
                     UserAccountsDrawerHeader(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(userAccount.photoURL!),
+                            image: AssetImage( "assets/img/BG.jpg"),
                             fit: BoxFit.cover),
                       ),
                       currentAccountPicture: CircleAvatar(
                           radius: 55,
-                          backgroundImage: NetworkImage(userAccount.photoURL!)),
+                          backgroundImage: NetworkImage(userAccount.photoURL??"https://pic.onlinewebfonts.com/svg/img_76927.png")),
                       accountEmail: Text(userAccount.email!),
-                      accountName: Text(userAccount.displayName!,
+                      accountName: Text(userAccount.displayName??"user name",
                           style: TextStyle(
                             color: Color.fromARGB(255, 255, 255, 255),
                           )),
@@ -116,6 +116,17 @@ class Home extends StatelessWidget {
                         title: Text("About"),
                         leading: Icon(Icons.help_center),
                         onTap: () {}),
+                        ListTile(
+                      title: Text("Profile Page"),
+                      leading: Icon(Icons.person),
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => ProfilePage(),
+                        //   ),
+                        // );
+                      }),
                     ListTile(
                         title: Text("Logout"),
                         leading: Icon(Icons.exit_to_app),

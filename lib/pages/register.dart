@@ -112,8 +112,26 @@ class _RegisterState extends State<Register> {
                             hintText: "Enter Your username : ",
                             suffixIcon: Icon(Icons.person))),
                     const SizedBox(
-                      height: 33,
+                      height: 22,
                     ),
+                        TextFormField(
+                      keyboardType: TextInputType.number,
+                      obscureText: false,
+                      decoration: decorationTextfield.copyWith(
+                          hintText: "Enter Your age : ",
+                          suffixIcon: Icon(Icons.pest_control_rodent))),
+                  const SizedBox(
+                    height: 22,
+                  ),
+                  TextFormField(
+                      keyboardType: TextInputType.text,
+                      obscureText: false,
+                      decoration: decorationTextfield.copyWith(
+                          hintText: "Enter Your title : ",
+                          suffixIcon: Icon(Icons.person_outline))),
+                  const SizedBox(
+                    height: 22,
+                  ),
                     TextFormField(
                         validator: (email) {
                           return email != null &&
@@ -132,8 +150,9 @@ class _RegisterState extends State<Register> {
                             hintText: "Enter Your Email : ",
                             suffixIcon: Icon(Icons.email))),
                     const SizedBox(
-                      height: 33,
+                      height: 22,
                     ),
+                 
                     TextFormField(
                       onChanged: (value) {
                         checkPasswordVal(value);
