@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/pages/login.dart';
 import 'package:e_commerce_app/shared/check%20password.dart';
 import 'package:e_commerce_app/shared/colors.dart';
@@ -28,6 +29,9 @@ class _RegisterState extends State<Register> {
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  final usernameController = TextEditingController();
+  final ageController = TextEditingController();
+  final titleController = TextEditingController();
   checkPasswordVal(String password) {
     isPassword8Char = false;
     isHasDigits = false;
@@ -61,6 +65,21 @@ class _RegisterState extends State<Register> {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text);
+
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+
+      users
+          .doc(credential.user!.uid)
+          .set({
+            "username": usernameController.text,
+            "age": ageController.text,
+            "title": titleController.text,
+            "email": emailController.text,
+            "Password": passwordController.text,
+          })
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         showSnackBar(context, "The password provided is too weak.");
@@ -87,11 +106,11 @@ class _RegisterState extends State<Register> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-        title: Text("SIGN UP"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: appbarGreen,
-      ),
+          title: Text("SIGN UP"),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: appbarGreen,
+        ),
         backgroundColor: Color.fromARGB(255, 247, 247, 247),
         body: Center(
           child: Padding(
@@ -106,6 +125,7 @@ class _RegisterState extends State<Register> {
                       height: 64,
                     ),
                     TextField(
+                        controller: usernameController,
                         keyboardType: TextInputType.text,
                         obscureText: false,
                         decoration: decorationTextfield.copyWith(
@@ -114,24 +134,26 @@ class _RegisterState extends State<Register> {
                     const SizedBox(
                       height: 22,
                     ),
-                        TextFormField(
-                      keyboardType: TextInputType.number,
-                      obscureText: false,
-                      decoration: decorationTextfield.copyWith(
-                          hintText: "Enter Your age : ",
-                          suffixIcon: Icon(Icons.pest_control_rodent))),
-                  const SizedBox(
-                    height: 22,
-                  ),
-                  TextFormField(
-                      keyboardType: TextInputType.text,
-                      obscureText: false,
-                      decoration: decorationTextfield.copyWith(
-                          hintText: "Enter Your title : ",
-                          suffixIcon: Icon(Icons.person_outline))),
-                  const SizedBox(
-                    height: 22,
-                  ),
+                    TextFormField(
+                        controller: ageController,
+                        keyboardType: TextInputType.number,
+                        obscureText: false,
+                        decoration: decorationTextfield.copyWith(
+                            hintText: "Enter Your age : ",
+                            suffixIcon: Icon(Icons.numbers))),
+                    const SizedBox(
+                      height: 22,
+                    ),
+                    TextFormField(
+                        controller: titleController,
+                        keyboardType: TextInputType.text,
+                        obscureText: false,
+                        decoration: decorationTextfield.copyWith(
+                            hintText: "Enter Your title : ",
+                            suffixIcon: Icon(Icons.person_outline))),
+                    const SizedBox(
+                      height: 22,
+                    ),
                     TextFormField(
                         validator: (email) {
                           return email != null &&
@@ -152,7 +174,6 @@ class _RegisterState extends State<Register> {
                     const SizedBox(
                       height: 22,
                     ),
-                 
                     TextFormField(
                       onChanged: (value) {
                         checkPasswordVal(value);
@@ -214,9 +235,9 @@ class _RegisterState extends State<Register> {
                       height: 33,
                     ),
                     ElevatedButton(
-                      onPressed: () async{
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                         await registerCount();
+                          await registerCount();
                           if (!mounted) return;
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Login()));
