@@ -7,6 +7,7 @@ import 'package:e_commerce_app/pages/profile_page.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/requird_products.dart';
+import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProviderInstans = Provider.of<CartProvider>(context);
-    final userAccount = FirebaseAuth.instance.currentUser!;
+    final userAccount = FirebaseAuth.instance.currentUser??showSnackBar( context,  "Error ...");
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(top: 22),

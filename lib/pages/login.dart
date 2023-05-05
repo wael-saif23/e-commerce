@@ -2,6 +2,7 @@
 
 import 'package:e_commerce_app/pages/forgot_passowrd.dart';
 import 'package:e_commerce_app/pages/register.dart';
+import 'package:e_commerce_app/pages/verify_email_page.dart';
 
 import 'package:e_commerce_app/providers/google_signin.dart';
 import 'package:e_commerce_app/shared/colors.dart';
@@ -34,11 +35,17 @@ class _LoginState extends State<Login> {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => VerifyEmailPage()),
+      );
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, "ERROR : ${e.code}");
     } catch (e) {
       showSnackBar(context, e.toString());
     }
+
     setState(() {
       isLoading = false;
     });
@@ -106,8 +113,8 @@ class _LoginState extends State<Login> {
                     height: 33,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      signIN();
+                    onPressed: () async {
+                      await signIN();
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(BTNgreen),
@@ -193,29 +200,9 @@ class _LoginState extends State<Login> {
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(width: 1)),
-                        child: SvgPicture.asset("assets/img/icons8-google.svg"),
                         height: 54,
+                        child: SvgPicture.asset("assets/img/icons8-google.svg"),
                       ))
-                  // Container(
-                  //   margin: EdgeInsets.symmetric(vertical: 27),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [
-                  //       GestureDetector(
-                  //         onTap: (){      },
-                  //         child: Container(
-                  //           padding: EdgeInsets.all(13),
-                  //           decoration: BoxDecoration(
-                  //               shape: BoxShape.circle,
-                  //               border:
-                  //                   Border.all( width: 1)),
-                  //           child: SvgPicture.asset(
-                  //             "assets/icons/facebook.svg",
-
-                  //             height: 27,
-                  //           ),))]
-                  //         ),
-                  //       ),
                 ],
               ),
             ),
