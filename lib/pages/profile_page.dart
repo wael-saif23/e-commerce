@@ -51,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              
               Center(
                   child: Container(
                 padding: const EdgeInsets.all(11),
