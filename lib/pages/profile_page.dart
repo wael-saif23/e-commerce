@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/data_from_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import 'login.dart';
@@ -18,6 +21,21 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final credential = FirebaseAuth.instance.currentUser;
+  File? imgPath;
+  uploadImageToScreen() async {
+    final pickedImg = await ImagePicker().pickImage(source: ImageSource.camera);
+    try {
+      if (pickedImg != null) {
+        setState(() {
+          imgPath = File(pickedImg.path);
+        });
+      } else {
+        print("NO img selected");
+      }
+    } catch (e) {
+      print("Error => $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +69,47 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
+              Center(
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey,
+                  ),
+                  child: Stack(
+                    children: [
+                      imgPath == null
+                          ? CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              radius: 64,
+                              foregroundImage:
+                                  AssetImage("assets/img/User_Avatar.png"),
+                            )
+                          : ClipOval(
+                              child: Image.file(
+                                imgPath!,
+                                width: 145,
+                                height: 145,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        right: -10,
+                        child: IconButton(
+                          onPressed: () {
+                            uploadImageToScreen();
+                          },
+                          icon: Icon(Icons.add_a_photo, color: appbarGreen),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 11,
+              ),
               Center(
                   child: Container(
                 padding: const EdgeInsets.all(11),
@@ -106,12 +164,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         credential!.delete();
                         users.doc(credential!.uid).delete();
                         Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Login()),
-                              );
-
-                        
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Login()),
+                        );
                       },
                       child: const Text("Delet User"))),
               const SizedBox(
