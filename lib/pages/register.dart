@@ -28,6 +28,7 @@ class _RegisterState extends State<Register> {
   bool isHasLowercase = false;
   bool isHasSpecialCharacters = false;
   File? imgPath;
+  ImageSource? galleryOrCamera;
 
   final emailController = TextEditingController();
 
@@ -104,8 +105,8 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
 
-  uploadImageToScreen() async {
-    final pickedImg = await ImagePicker().pickImage(source: ImageSource.camera);
+  uploadImageToScreen(galleryOrCamera) async {
+    final pickedImg = await ImagePicker().pickImage(source: galleryOrCamera);
     try {
       if (pickedImg != null) {
         setState(() {
@@ -167,8 +168,90 @@ class _RegisterState extends State<Register> {
                             right: -10,
                             child: IconButton(
                               onPressed: () {
-                                uploadImageToScreen();
-                              },
+                            showModalBottomSheet(
+                                backgroundColor: Colors.white.withOpacity(.8),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20))),
+                                isDismissible: true,
+                                context: context,
+                                builder: (context) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    onPressed: () {
+                                                      uploadImageToScreen(
+                                                          ImageSource.gallery);
+                                                          Navigator.pop(context);
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .photo_library_outlined,
+                                                      size: 50,
+                                                      color: appbarGreen,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Text(
+                                                  "Gallery",
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      color: appbarGreen),
+                                                )
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    onPressed: () {
+                                                      uploadImageToScreen(
+                                                          ImageSource.camera);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.camera,
+                                                        size: 50,
+                                                        color: appbarGreen),
+                                                  ),
+                                                ),
+                                                const Text(
+                                                  "camera",
+                                                  style: TextStyle(
+                                                      fontSize: 30,
+                                                      color: appbarGreen),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                            // uploadImageToScreen();
+                          },
                               icon: Icon(Icons.add_a_photo, color: appbarGreen),
                             ),
                           )

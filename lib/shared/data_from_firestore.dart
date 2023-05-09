@@ -127,7 +127,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                   ],
                 ),
                 const SizedBox(
-                  height: 22,
+                  height: 8,
                 ),
                 Row(
                   children: [
@@ -145,7 +145,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                   ],
                 ),
                 const SizedBox(
-                  height: 22,
+                  height: 8,
                 ),
                 Row(
                   children: [
@@ -163,7 +163,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                   ],
                 ),
                 const SizedBox(
-                  height: 22,
+                  height: 8,
                 ),
                 Row(
                   children: [
@@ -192,7 +192,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                   ],
                 ),
                 const SizedBox(
-                  height: 22,
+                  height: 8,
                 ),
                 Row(
                   children: [

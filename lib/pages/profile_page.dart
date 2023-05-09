@@ -22,8 +22,9 @@ class _ProfilePageState extends State<ProfilePage> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final credential = FirebaseAuth.instance.currentUser;
   File? imgPath;
-  uploadImageToScreen() async {
-    final pickedImg = await ImagePicker().pickImage(source: ImageSource.camera);
+  ImageSource? galleryOrCamera;
+  uploadImageToScreen(galleryOrCamera) async {
+    final pickedImg = await ImagePicker().pickImage(source: galleryOrCamera);
     try {
       if (pickedImg != null) {
         setState(() {
@@ -46,7 +47,10 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               if (!mounted) return;
-              Navigator.pop(context);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                  (route) => false);
             },
             label: const Text(
               "logout",
@@ -98,7 +102,89 @@ class _ProfilePageState extends State<ProfilePage> {
                         right: -10,
                         child: IconButton(
                           onPressed: () {
-                            uploadImageToScreen();
+                            showModalBottomSheet(
+                                backgroundColor: Colors.white.withOpacity(.8),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20))),
+                                isDismissible: true,
+                                context: context,
+                                builder: (context) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    onPressed: () {
+                                                      uploadImageToScreen(
+                                                          ImageSource.gallery);
+                                                          Navigator.pop(context);
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .photo_library_outlined,
+                                                      size: 50,
+                                                      color: appbarGreen,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Text(
+                                                  "Gallery",
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      color: appbarGreen),
+                                                )
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    onPressed: () {
+                                                      uploadImageToScreen(
+                                                          ImageSource.camera);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.camera,
+                                                        size: 50,
+                                                        color: appbarGreen),
+                                                  ),
+                                                ),
+                                                const Text(
+                                                  "camera",
+                                                  style: TextStyle(
+                                                      fontSize: 30,
+                                                      color: appbarGreen),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                            // uploadImageToScreen();
                           },
                           icon: Icon(Icons.add_a_photo, color: appbarGreen),
                         ),
@@ -163,11 +249,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () {
                         credential!.delete();
                         users.doc(credential!.uid).delete();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Login()),
-                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()),
+                            (route) => false);
                       },
                       child: const Text("Delet User"))),
               const SizedBox(
