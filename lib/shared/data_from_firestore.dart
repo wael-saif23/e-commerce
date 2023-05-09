@@ -103,16 +103,27 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                 Row(
                   children: [
                     Text(
-                      "Username: ${data['username']}",
+                      data['username']==null ? " Username: ....... ":"Username: ${data['username']}",
                       style: const TextStyle(
                         fontSize: 17,
                       ),
                     ),
-                    IconButton(
+                    Row(
+                      children: [
+                        IconButton(
                         onPressed: () {
-                          myDialog(data,'username');
+                          setState(() {
+                            users.doc(credential!.uid).update({"username": FieldValue.delete()});
+                          });
                         },
-                        icon: const Icon(Icons.edit))
+                        icon: const Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: () {
+                              myDialog(data,'username');
+                            },
+                            icon: const Icon(Icons.edit)),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -121,7 +132,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                 Row(
                   children: [
                     Text(
-                      "Email: ${data['email']}",
+                      data['email']==null ? " Email: ....... ":"Email: ${data['email']}",
                       style: const TextStyle(
                         fontSize: 17,
                       ),
@@ -139,7 +150,7 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                 Row(
                   children: [
                     Text(
-                      "Password: ${data['Password']}",
+                      data['Password']==null ? " Password: ....... ":"Password: ${data['Password']}",
                       style: const TextStyle(
                         fontSize: 17,
                       ),
@@ -157,16 +168,27 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                 Row(
                   children: [
                     Text(
-                      "Age: ${data['age']} years old",
+                      data['age']==null ? " Age: ....... ":"Age: ${data['age']}",
                       style: const TextStyle(
                         fontSize: 17,
                       ),
                     ),
-                    IconButton(
+                    Row(
+                      children: [
+                        IconButton(
                         onPressed: () {
-                          myDialog(data,'age');
+                          setState(() {
+                            users.doc(credential!.uid).update({"age": FieldValue.delete()});
+                          });
                         },
-                        icon: const Icon(Icons.edit))
+                        icon: const Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: () {
+                              myDialog(data,'age');
+                            },
+                            icon: const Icon(Icons.edit)),
+                      ],
+                    )
                   ],
                 ),
                 const SizedBox(
@@ -175,16 +197,27 @@ class _GetDataFromFirestoreState extends State<GetDataFromFirestore> {
                 Row(
                   children: [
                     Text(
-                      "Title: ${data['title']} ",
+                     data['title']==null ? " Title: ....... ":"Title: ${data['title']}",
                       style: const TextStyle(
                         fontSize: 17,
                       ),
                     ),
-                     IconButton(
+                     Row(
+                       children: [
+                        IconButton(
                         onPressed: () {
-                          myDialog(data,'title');
+                          setState(() {
+                            users.doc(credential!.uid).update({"title": FieldValue.delete()});
+                          });
                         },
-                        icon: const Icon(Icons.edit))
+                        icon: const Icon(Icons.delete)),
+                         IconButton(
+                            onPressed: () {
+                              myDialog(data,'title');
+                            },
+                            icon: const Icon(Icons.edit)),
+                       ],
+                     )
                   ],
                 ),
               ],

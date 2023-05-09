@@ -1,11 +1,12 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/data_from_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'login.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   final credential = FirebaseAuth.instance.currentUser;
 
   @override
@@ -65,37 +67,54 @@ class _ProfilePageState extends State<ProfilePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 11,
                   ),
                   Text(
                     "Email: ${credential!.email}    ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 11,
                   ),
                   Text(
                     "Created date:  ${DateFormat("MMMM d, y").format(credential!.metadata.creationTime!)}    ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 11,
                   ),
                   Text(
                     "Last Signed In: ${DateFormat("MMMM d, y").format(credential!.metadata.lastSignInTime!)} ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
                 ],
               ),
               const SizedBox(
-                height: 55,
+                height: 11,
+              ),
+              Center(
+                  child: TextButton(
+                      onPressed: () {
+                        credential!.delete();
+                        users.doc(credential!.uid).delete();
+                        Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Login()),
+                              );
+
+                        
+                      },
+                      child: const Text("Delet User"))),
+              const SizedBox(
+                height: 16,
               ),
               Center(
                   child: Container(
@@ -108,9 +127,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(
                           fontSize: 20,
                         ),
-                        
                       ))),
-                      GetDataFromFirestore(documentId: credential!.uid),
+              GetDataFromFirestore(documentId: credential!.uid),
             ],
           ),
         ),
