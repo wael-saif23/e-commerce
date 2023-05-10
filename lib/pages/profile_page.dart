@@ -36,6 +36,8 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       print("Error => $e");
     }
+    if (mounted) return;
+    Navigator.pop(context);
   }
 
   @override
@@ -75,15 +77,15 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               Center(
                 child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.grey,
                   ),
                   child: Stack(
                     children: [
                       imgPath == null
-                          ? CircleAvatar(
+                          ? const CircleAvatar(
                               backgroundColor: Colors.grey,
                               radius: 64,
                               foregroundImage:
@@ -102,91 +104,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         right: -10,
                         child: IconButton(
                           onPressed: () {
-                            showModalBottomSheet(
-                                backgroundColor: Colors.white.withOpacity(.8),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20))),
-                                isDismissible: true,
-                                context: context,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 4),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      uploadImageToScreen(
-                                                          ImageSource.gallery);
-                                                          Navigator.pop(context);
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons
-                                                          .photo_library_outlined,
-                                                      size: 50,
-                                                      color: appbarGreen,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  "Gallery",
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      color: appbarGreen),
-                                                )
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 11,
-                                            ),
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 4),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      uploadImageToScreen(
-                                                          ImageSource.camera);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.camera,
-                                                        size: 50,
-                                                        color: appbarGreen),
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  "camera",
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      color: appbarGreen),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
+                            showModal(context);
                             // uploadImageToScreen();
                           },
-                          icon: Icon(Icons.add_a_photo, color: appbarGreen),
+                          icon: const Icon(Icons.add_a_photo, color: appbarGreen),
                         ),
                       )
                     ],
@@ -277,5 +198,73 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showModal(BuildContext context) {
+    return showModalBottomSheet(
+        backgroundColor: Colors.white.withOpacity(.8),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        isDismissible: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () async {
+                              await uploadImageToScreen(ImageSource.gallery);
+                            },
+                            icon: const Icon(
+                              Icons.photo_library_outlined,
+                              size: 50,
+                              color: appbarGreen,
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          "Gallery",
+                          style: TextStyle(fontSize: 24, color: appbarGreen),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 11,
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () async {
+                              await uploadImageToScreen(ImageSource.camera);
+                            },
+                            icon: const Icon(Icons.camera,
+                                size: 50, color: appbarGreen),
+                          ),
+                        ),
+                        const Text(
+                          "camera",
+                          style: TextStyle(fontSize: 30, color: appbarGreen),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

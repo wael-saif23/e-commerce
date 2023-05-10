@@ -118,6 +118,8 @@ class _RegisterState extends State<Register> {
     } catch (e) {
       print("Error => $e");
     }
+    if (mounted) return;
+    Navigator.pop(context);
   }
 
   @override
@@ -168,90 +170,9 @@ class _RegisterState extends State<Register> {
                             right: -10,
                             child: IconButton(
                               onPressed: () {
-                            showModalBottomSheet(
-                                backgroundColor: Colors.white.withOpacity(.8),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20))),
-                                isDismissible: true,
-                                context: context,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 4),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      uploadImageToScreen(
-                                                          ImageSource.gallery);
-                                                          Navigator.pop(context);
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons
-                                                          .photo_library_outlined,
-                                                      size: 50,
-                                                      color: appbarGreen,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  "Gallery",
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      color: appbarGreen),
-                                                )
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 11,
-                                            ),
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 4),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      uploadImageToScreen(
-                                                          ImageSource.camera);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.camera,
-                                                        size: 50,
-                                                        color: appbarGreen),
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  "camera",
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      color: appbarGreen),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
-                            // uploadImageToScreen();
-                          },
+                                showModal(context);
+                                // uploadImageToScreen();
+                              },
                               icon: Icon(Icons.add_a_photo, color: appbarGreen),
                             ),
                           )
@@ -426,5 +347,73 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showModal(BuildContext context) {
+    return showModalBottomSheet(
+        backgroundColor: Colors.white.withOpacity(.8),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        isDismissible: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () async {
+                              await uploadImageToScreen(ImageSource.gallery);
+                            },
+                            icon: const Icon(
+                              Icons.photo_library_outlined,
+                              size: 50,
+                              color: appbarGreen,
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          "Gallery",
+                          style: TextStyle(fontSize: 24, color: appbarGreen),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 11,
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () async {
+                              await uploadImageToScreen(ImageSource.camera);
+                            },
+                            icon: const Icon(Icons.camera,
+                                size: 50, color: appbarGreen),
+                          ),
+                        ),
+                        const Text(
+                          "camera",
+                          style: TextStyle(fontSize: 30, color: appbarGreen),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
