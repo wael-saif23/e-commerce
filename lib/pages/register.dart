@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/pages/login.dart';
 import 'package:e_commerce_app/shared/check%20password.dart';
@@ -7,9 +9,11 @@ import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/contants.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:path/path.dart' show basename;
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -29,6 +33,7 @@ class _RegisterState extends State<Register> {
   bool isHasSpecialCharacters = false;
   File? imgPath;
   ImageSource? galleryOrCamera;
+  String? imgName;
 
   final emailController = TextEditingController();
 
@@ -69,6 +74,9 @@ class _RegisterState extends State<Register> {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text);
+
+      final storageRef = FirebaseStorage.instance.ref(imgName);
+      await storageRef.putFile(imgPath!);
 
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
@@ -111,6 +119,9 @@ class _RegisterState extends State<Register> {
       if (pickedImg != null) {
         setState(() {
           imgPath = File(pickedImg.path);
+          imgName = basename(pickedImg.path);
+          int random = Random().nextInt(9999999);
+          imgName = "$random$imgName";
         });
       } else {
         print("NO img selected");
@@ -171,7 +182,6 @@ class _RegisterState extends State<Register> {
                             child: IconButton(
                               onPressed: () {
                                 showModal(context);
-                                // uploadImageToScreen();
                               },
                               icon: Icon(Icons.add_a_photo, color: appbarGreen),
                             ),
@@ -193,12 +203,14 @@ class _RegisterState extends State<Register> {
                       height: 22,
                     ),
                     TextFormField(
-                        controller: ageController,
-                        keyboardType: TextInputType.number,
-                        obscureText: false,
-                        decoration: decorationTextfield.copyWith(
-                            hintText: "Enter Your age : ",
-                            suffixIcon: Icon(Icons.numbers))),
+                      controller: ageController,
+                      keyboardType: TextInputType.number,
+                      obscureText: false,
+                      decoration: decorationTextfield.copyWith(
+                        hintText: "Enter Your age : ",
+                        suffixIcon: Icon(Icons.numbers),
+                      ),
+                    ),
                     const SizedBox(
                       height: 22,
                     ),
@@ -294,12 +306,18 @@ class _RegisterState extends State<Register> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate() &&
+                            imgName != null &&
+                            imgPath != null) {
                           await registerCount();
                           if (!mounted) return;
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Login()));
-                        } else {
+                        } 
+                        else if(imgName == null || imgPath == null ){
+                          showSnackBar(context, "Error: plz pick an image.");
+                        }
+                        else {
                           showSnackBar(context, "Error");
                         }
                       },
