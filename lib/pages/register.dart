@@ -75,8 +75,9 @@ class _RegisterState extends State<Register> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text);
 
-      final storageRef = FirebaseStorage.instance.ref(imgName);
+      final storageRef = FirebaseStorage.instance.ref("UserImges/$imgName");
       await storageRef.putFile(imgPath!);
+      String url = await storageRef.getDownloadURL();
 
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
@@ -84,6 +85,7 @@ class _RegisterState extends State<Register> {
       users
           .doc(credential.user!.uid)
           .set({
+            "imglink": url,
             "username": usernameController.text,
             "age": ageController.text,
             "title": titleController.text,
