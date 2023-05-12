@@ -33,7 +33,7 @@ class _LoginState extends State<Login> {
       isLoading = true;
     });
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       if (!mounted) return;
       Navigator.pushReplacement(

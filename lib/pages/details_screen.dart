@@ -2,8 +2,7 @@ import 'package:e_commerce_app/models/items_model.dart';
 import 'package:e_commerce_app/shared/colors.dart';
 import 'package:e_commerce_app/shared/requird_products.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({super.key, required this.product});

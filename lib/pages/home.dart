@@ -2,7 +2,7 @@
 
 import 'package:e_commerce_app/models/items_model.dart';
 import 'package:e_commerce_app/pages/check_out_screen.dart';
-import 'package:e_commerce_app/pages/details-screen.dart';
+import 'package:e_commerce_app/pages/details_screen.dart';
 import 'package:e_commerce_app/pages/profile_page.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/shared/colors.dart';
