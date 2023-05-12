@@ -6,6 +6,7 @@ import 'package:e_commerce_app/pages/details-screen.dart';
 import 'package:e_commerce_app/pages/profile_page.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/shared/colors.dart';
+import 'package:e_commerce_app/shared/get_image.dart';
 import 'package:e_commerce_app/shared/requird_products.dart';
 import 'package:e_commerce_app/shared/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -84,9 +85,7 @@ class Home extends StatelessWidget {
                             image: AssetImage( "assets/img/BG.jpg"),
                             fit: BoxFit.cover),
                       ),
-                      currentAccountPicture: CircleAvatar(
-                          radius: 55,
-                          backgroundImage: NetworkImage(userAccount.photoURL??"https://pic.onlinewebfonts.com/svg/img_76927.png")),
+                      currentAccountPicture: GetimageFromFirestore(),
                       accountEmail: Text(userAccount.email!),
                       accountName: Text(userAccount.displayName??"user name",
                           style: TextStyle(
